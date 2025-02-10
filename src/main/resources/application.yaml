@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: demo-dev
+
+  data:
+    mongodb:
+      uri: mongodb+srv://Sira:pXNYDkq1VvDy3ztf@cluster0.moo8k.mongodb.net/dataknol-fisec?retryWrites=true&w=majority
+
+server:
+  port: 9089
