@@ -2,9 +2,11 @@ package com.example.paymentProcess.controller.viewController;
 
 import com.example.paymentProcess.service.viewService.*;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/api/view")
 public class CreateViewsController {
 
     private final TransactionReceivedViewService transactionReceivedViewService;

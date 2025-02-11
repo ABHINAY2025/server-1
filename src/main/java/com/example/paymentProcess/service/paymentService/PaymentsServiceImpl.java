@@ -171,9 +171,9 @@ public class PaymentsServiceImpl implements PaymentsService{
 
     // Get STP Configurations by Customer Name
     @Override
-    public List<StpConfigurations> getStpConfigurationsByCustomerName(String name) {
+    public List<StpConfigurations> getStpConfigurationsByCustomerName(String customerName) {
         try {
-            String decodedName = URLDecoder.decode(name, StandardCharsets.UTF_8);
+            String decodedName = URLDecoder.decode(customerName, StandardCharsets.UTF_8);
             return stpConfigurationRepository.findByCustomerName(decodedName);
         } catch (Exception e) {
             throw new RuntimeException("Error occurred while fetching STP configurations by customer name: " + e.getMessage(), e);
@@ -313,4 +313,5 @@ public class PaymentsServiceImpl implements PaymentsService{
             throw new RuntimeException("Error occurred while fetching autocorrect rule by ID: " + e.getMessage(), e);
         }
     }
+
 }

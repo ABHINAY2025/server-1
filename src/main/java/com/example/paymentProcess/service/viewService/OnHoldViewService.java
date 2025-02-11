@@ -32,11 +32,12 @@ public class OnHoldViewService {
                             )
                     ))
                     .append("releasedTransactions", Arrays.asList(
-                            new Document("$match", new Document("fileStatus", "txnReleased")),
+                            new Document("$match", new Document("fileStatus", new Document("$in", Arrays.asList("txnReleased", "Approved", "Auto Corrected", "STP")))),
                             new Document("$count", "releasedTotal")
                     ))
                     .append("releasedAmount", Arrays.asList(
-                            new Document("$match", new Document("fileStatus", "txnReleased")),
+                            new Document("$match", new Document("fileStatus", new Document("$in", Arrays.asList("txnReleased", "Approve", "Auto Corrected", "STP")))),
+                            new Document("$match", new Document("amount", new Document("$ne", null))),
                             new Document("$group", new Document("_id", null)
                                     .append("totalAmount", new Document("$sum", "$amount"))
                             )

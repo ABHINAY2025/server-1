@@ -9,11 +9,14 @@ import com.example.paymentProcess.repository.BicRepository;
 import com.example.paymentProcess.repository.IbanRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.text.similarity.JaroWinklerDistance;
+import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -197,12 +200,15 @@ public class AutoCorrectUtility {
                 // Handle debtor BIC issue
                 if (debtorBicIssue && !debtorAutoCorrected) {
                     String debtorBic = findSuggestedBic(debtor.getDebtorAddress(), debtor.getDebtorIban(), debtor.getDebtorName());
+                    String dbBic = payment.getInitialDebtor().getDebtorBic();
                     String debtorSuggestedBic = extractBicFromJson(debtorBic);
                     if (!"No BIC Found".equals(debtorSuggestedBic)) {
                         debtor.setDebtorBic(debtorSuggestedBic);
                         if (dbtrMlSuggestion == null) {
                             dbtrMlSuggestion = new Payments.MlSuggestion();
                         }
+                        Double mlScore = getSimilarityScore(dbBic, debtorSuggestedBic);
+                        dbtrMlSuggestion.setMlScore(mlScore);
                         dbtrMlSuggestion.setMlSuggestion(debtorSuggestedBic);
                         payment.setDbtrMlSuggestion(dbtrMlSuggestion);
                     }
@@ -212,11 +218,14 @@ public class AutoCorrectUtility {
                 if (creditorBicIssue && !creditorAutoCorrected) {
                     String creditorBic = findSuggestedBic(creditor.getCreditorAddress(), creditor.getCreditorIban(), creditor.getCreditorName());
                     String creditorSuggestedBic = extractBicFromJson(creditorBic);
+                    String CdBic = payment.getInitialCreditor().getCreditorBic();
                     if (!"No BIC Found".equals(creditorSuggestedBic)) {
                         creditor.setCreditorBic(creditorSuggestedBic);
                         if (cdtrMlSuggestion == null) {
                             cdtrMlSuggestion = new Payments.MlSuggestion();
                         }
+                        Double mlScore = getSimilarityScore(CdBic, creditorSuggestedBic);
+                        cdtrMlSuggestion.setMlScore(mlScore);
                         cdtrMlSuggestion.setMlSuggestion(creditorSuggestedBic);
                         payment.setCdtrMlSuggestion(cdtrMlSuggestion);
                     }
@@ -271,6 +280,36 @@ public class AutoCorrectUtility {
         return "No BIC Found";
     }
 
+    private String extractBicFromJson(String json) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(json);
+            return jsonNode.path("bic").asText();  // Extract the BIC value
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Invalid BIC";
+        }
+    }
+
+    public static double getJaroWinklerSimilarityScore(String oldBic, String newBic) {
+        JaroWinklerDistance jaroWinkler = new JaroWinklerDistance();
+        return jaroWinkler.apply(oldBic, newBic);
+    }
+
+    // Method to get the similarity score between two strings using Levenshtein Distance
+    public static double getSimilarityScore(String oldBic, String newBic) {
+        LevenshteinDistance levenshtein = new LevenshteinDistance();
+        int distance = levenshtein.apply(oldBic, newBic);
+        int maxLength = Math.max(oldBic.length(), newBic.length());
+
+        if (maxLength == 0) {
+            return 1.0;  // If both strings are empty, they are identical
+        }
+
+        // Similarity score between 0 and 1 (1 is identical)
+        return 1.0 - (double) distance / maxLength;
+    }
+
     private String createUpdatedXml(Payments payment, Payments.Debtor debtor, Payments.Creditor creditor) throws Exception {
         // Parse the cleaned XML string
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -311,15 +350,6 @@ public class AutoCorrectUtility {
         }
     }
 
-    private String extractBicFromJson(String json) {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode jsonNode = objectMapper.readTree(json);
-            return jsonNode.path("bic").asText();  // Extract the BIC value
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "Invalid BIC";
-        }
-    }
+
 }
 

@@ -62,7 +62,8 @@ public class ApprovedService {
             InputStream is = new ByteArrayInputStream(originalXml.getBytes("UTF-8"));
             Document document = builder.parse(is);
 
-            String formattedOriginalXml = formatXml(document);
+            String formattedOriginalXml = originalXml;
+//            String formattedOriginalXml = formatXml(document);
 
 //            // Remove BOM (Byte Order Mark) if it exists and trim the string
 //            if (originalXml.startsWith("\uFEFF")) {

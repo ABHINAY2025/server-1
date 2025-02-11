@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface StpConfigurationRepository extends MongoRepository<StpConfigurations, String> {
 
-    List<StpConfigurations> findByCustomerName(String name);
+    List<StpConfigurations> findByCustomerName(String customerName);
 }

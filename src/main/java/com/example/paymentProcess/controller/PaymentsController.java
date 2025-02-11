@@ -151,12 +151,12 @@ public class PaymentsController {
         }
     }
 
-    @GetMapping("/stpConfigurations/{name}")
-    public ResponseEntity<List<StpConfigurations>> getStpRuleByName(@RequestParam(required = false) String name){
+    @GetMapping("/stpConfigurations/{customerName}")
+    public ResponseEntity<List<StpConfigurations>> getStpRuleByName(@PathVariable(required = false) String customerName){
 
         List<StpConfigurations> stpConfigurations;
-        if(name != null && !name.isEmpty()){
-            stpConfigurations = paymentsService.getStpConfigurationsByCustomerName(name);
+        if(customerName != null && !customerName.isEmpty()){
+            stpConfigurations = paymentsService.getStpConfigurationsByCustomerName(customerName);
         }else {
             stpConfigurations = paymentsService.getAllStpConfigurations();
         }
@@ -292,5 +292,6 @@ public class PaymentsController {
             return ResponseEntity.status(500).body(e.getMessage());
         }
     }
+
 
 }
