@@ -54,8 +54,19 @@ public class RepairViewService {
             );
 
             Document projectStage = new Document("$project", new Document()
-                    .append("totalTransactions", new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$totalTransactions.total", 0)), 0)))
-                    .append("totalAmount", new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$totalAmount.totalAmount", 0)), 0)))
+                    // Total Transactions calculation
+                    .append("totalTransactions", new Document("$sum", Arrays.asList(
+                            new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$toBeRepairedTransactions.toBeRepairedTotal", 0)), 0)),
+                            new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$autoCorrectedTransactions.autoCorrectedTotal", 0)), 0)),
+                            new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$approvedTransactions.approvedTotal", 0)), 0))
+                    )))
+                    // Total Amount calculation
+                    .append("totalAmount", new Document("$sum", Arrays.asList(
+                            new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$toBeRepairedAmount.totalAmount", 0)), 0)),
+                            new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$autoCorrectedAmount.totalAmount", 0)), 0)),
+                            new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$approvedAmount.totalAmount", 0)), 0))
+                    )))
+                    // toBeRepairedTransactions
                     .append("toBeRepairedTransactions", new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$toBeRepairedTransactions.toBeRepairedTotal", 0)), 0)))
                     .append("toBeRepairedAmount", new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$toBeRepairedAmount.totalAmount", 0)), 0)))
                     .append("toBeRepairedPercentage", new Document("$cond", Arrays.asList(
@@ -69,6 +80,7 @@ public class RepairViewService {
                             )),
                             0
                     )))
+                    // autoCorrectedTransactions
                     .append("autoCorrectedTransactions", new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$autoCorrectedTransactions.autoCorrectedTotal", 0)), 0)))
                     .append("autoCorrectedAmount", new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$autoCorrectedAmount.totalAmount", 0)), 0)))
                     .append("autoCorrectedPercentage", new Document("$cond", Arrays.asList(
@@ -82,6 +94,7 @@ public class RepairViewService {
                             )),
                             0
                     )))
+                    // approvedTransactions
                     .append("approvedTransactions", new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$approvedTransactions.approvedTotal", 0)), 0)))
                     .append("approvedAmount", new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$approvedAmount.totalAmount", 0)), 0)))
                     .append("approvedPercentage", new Document("$cond", Arrays.asList(
@@ -94,7 +107,8 @@ public class RepairViewService {
                                     100
                             )),
                             0
-                    ))));
+                    )))
+            );
 
             // Create the view using the `create` command
             List<Document> pipeline = Arrays.asList(facetStage, projectStage);
@@ -112,4 +126,3 @@ public class RepairViewService {
         }
     }
 }
-

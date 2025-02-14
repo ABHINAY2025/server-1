@@ -54,8 +54,19 @@ public class TransactionValueViewService {
             );
 
             Document projectStage = new Document("$project", new Document()
-                    .append("totalTransactions", new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$totalTransactions.total", 0)), 0)))
-                    .append("totalAmount", new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$totalAmount.totalAmount", 0)), 0)))
+                    // Calculate totalTransactions = tier1Transactions + tier2Transactions + tier3Transactions
+                    .append("totalTransactions", new Document("$sum", Arrays.asList(
+                            new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$tier1Transactions.tier1Total", 0)), 0)),
+                            new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$tier2Transactions.tier2Total", 0)), 0)),
+                            new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$tier3Transactions.tier3Total", 0)), 0))
+                    )))
+                    // Calculate totalAmount = tier1Amount + tier2Amount + tier3Amount
+                    .append("totalAmount", new Document("$sum", Arrays.asList(
+                            new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$tier1Amount.totalAmount", 0)), 0)),
+                            new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$tier2Amount.totalAmount", 0)), 0)),
+                            new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$tier3Amount.totalAmount", 0)), 0))
+                    )))
+                    // Tier 1 details
                     .append("tier1Transactions", new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$tier1Transactions.tier1Total", 0)), 0)))
                     .append("tier1Amount", new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$tier1Amount.totalAmount", 0)), 0)))
                     .append("tier1Percentage", new Document("$cond", Arrays.asList(
@@ -69,6 +80,8 @@ public class TransactionValueViewService {
                             )),
                             0
                     )))
+
+                    // Tier 2 details
                     .append("tier2Transactions", new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$tier2Transactions.tier2Total", 0)), 0)))
                     .append("tier2Amount", new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$tier2Amount.totalAmount", 0)), 0)))
                     .append("tier2Percentage", new Document("$cond", Arrays.asList(
@@ -82,6 +95,8 @@ public class TransactionValueViewService {
                             )),
                             0
                     )))
+
+                    // Tier 3 details
                     .append("tier3Transactions", new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$tier3Transactions.tier3Total", 0)), 0)))
                     .append("tier3Amount", new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$tier3Amount.totalAmount", 0)), 0)))
                     .append("tier3Percentage", new Document("$cond", Arrays.asList(
@@ -112,4 +127,3 @@ public class TransactionValueViewService {
         }
     }
 }
-

@@ -45,8 +45,17 @@ public class OnHoldViewService {
             );
 
             Document projectStage = new Document("$project", new Document()
-                    .append("totalTransactions", new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$totalTransactions.total", 0)), 0)))
-                    .append("totalAmount", new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$totalAmount.totalAmount", 0)), 0)))
+                    // Total Transactions calculation (sum of onHoldTransactions and releasedTransactions)
+                    .append("totalTransactions", new Document("$sum", Arrays.asList(
+                            new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$onHoldTransactions.onHoldTotal", 0)), 0)),
+                            new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$releasedTransactions.releasedTotal", 0)), 0))
+                    )))
+                    // Total Amount calculation (sum of onHoldAmount and releasedAmount)
+                    .append("totalAmount", new Document("$sum", Arrays.asList(
+                            new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$onHoldAmount.totalAmount", 0)), 0)),
+                            new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$releasedAmount.totalAmount", 0)), 0))
+                    )))
+                    // onHoldTransactions
                     .append("onHoldTransactions", new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$onHoldTransactions.onHoldTotal", 0)), 0)))
                     .append("onHoldAmount", new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$onHoldAmount.totalAmount", 0)), 0)))
                     .append("onHoldPercentage", new Document("$cond", Arrays.asList(
@@ -60,6 +69,7 @@ public class OnHoldViewService {
                             )),
                             0
                     )))
+                    // releasedTransactions
                     .append("releasedTransactions", new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$releasedTransactions.releasedTotal", 0)), 0)))
                     .append("releasedAmount", new Document("$ifNull", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$releasedAmount.totalAmount", 0)), 0)))
                     .append("releasedPercentage", new Document("$cond", Arrays.asList(
@@ -90,4 +100,3 @@ public class OnHoldViewService {
         }
     }
 }
-
