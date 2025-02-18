@@ -1,6 +1,6 @@
 spring:
   application:
-    name: demo-dev
+    name: paymentProcess
 
   data:
     mongodb:
@@ -8,3 +8,11 @@ spring:
 
 server:
   port: 5000
+
+api:
+  Ml:
+    url: http://10.30.0.104:8000/findrules
+  auth:
+    header:
+      #      Authorization:
+#      Content-Type: application/json
