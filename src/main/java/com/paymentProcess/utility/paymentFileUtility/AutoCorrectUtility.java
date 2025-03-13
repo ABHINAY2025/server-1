@@ -28,6 +28,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+
 @Component
 public class AutoCorrectUtility {
 
@@ -177,7 +178,10 @@ public class AutoCorrectUtility {
 
             if (bicAutoCorrectedDb && bicAutoCorrectedCd) {
                 payment.setFileStatus("Auto Corrected");
+            } else if (debtorAutoCorrected && creditorAutoCorrected) {
+                payment.setFileStatus("Auto Corrected");
             } else {
+
 
                 if (debtorBicIssue && !debtorAutoCorrected) {
                     String debtorBic = findSuggestedBic(debtor.getDebtorAddress(), debtor.getDebtorIban(), debtor.getDebtorName());
@@ -193,6 +197,7 @@ public class AutoCorrectUtility {
                         dbtrMlSuggestion.setMlSuggestion(debtorSuggestedBic);
                         payment.setDbtrMlSuggestion(dbtrMlSuggestion);
                     }
+                    payment.setFileStatus("To Be Repaired");
                 }
 
                 if (creditorBicIssue && !creditorAutoCorrected) {
@@ -209,15 +214,13 @@ public class AutoCorrectUtility {
                         cdtrMlSuggestion.setMlSuggestion(creditorSuggestedBic);
                         payment.setCdtrMlSuggestion(cdtrMlSuggestion);
                     }
+                    payment.setFileStatus("To Be Repaired");
                 }
 
-                payment.setFileStatus("To Be Repaired");
             }
-        } else {
-            if (debtorAutoCorrected && creditorAutoCorrected) {
-                payment.setFileStatus("Auto Corrected");
-            }
+
         }
+
 
         List<Payments.RuleID> updatedRuleIDsList = new ArrayList<>();
         updatedRuleIDsList.add(debtorRuleID);
@@ -229,7 +232,6 @@ public class AutoCorrectUtility {
         autoCorrected.setCreditorAutoCorrected(creditorAutoCorrected);
         return autoCorrected;
     }
-
 
 
     private String findSuggestedBic(String address, String iban, String name) {
