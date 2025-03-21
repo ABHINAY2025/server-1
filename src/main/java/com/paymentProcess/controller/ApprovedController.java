@@ -1,5 +1,6 @@
 package com.paymentProcess.controller;
 
+import com.paymentProcess.dto.ApprovedStatusResponse;
 import com.paymentProcess.service.paymentService.ApprovedService;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,12 +15,16 @@ public class ApprovedController {
     }
 
     @PostMapping("/approve/paymentFile/{id}")
-    public String approvePaymentFile(@PathVariable String id, @RequestBody String updatedXml) throws Exception {
+    public ApprovedStatusResponse approvePaymentFile(@PathVariable String id, @RequestBody String updatedXml) throws Exception {
         boolean isApproved = approvedService.approvePaymentFile(id, updatedXml);
         if (isApproved) {
-            return "Payment file approved successfully.";
+            ApprovedStatusResponse approvedStatusResponse = new ApprovedStatusResponse();
+            approvedStatusResponse.setMessage("Payment file approved successfully.");
+            return approvedStatusResponse;
         } else {
-            return "Payment file not found or could not be approved.";
+            ApprovedStatusResponse approvedStatusResponse = new ApprovedStatusResponse();
+            approvedStatusResponse.setMessage("Payment file not found or could not be approved.");
+            return approvedStatusResponse;
         }
     }
 }
