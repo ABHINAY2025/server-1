@@ -68,6 +68,8 @@ public class PaymentsController {
         public ResponseEntity<Map<String, Object>> getAllTransactions(
                 @RequestParam(required = false) String fileStatus) {
 
+//        System.out.print(fileStatus);
+
 
             List<Payments> paymentFiles;
             if (fileStatus != null && !fileStatus.isEmpty()) {
