@@ -3,6 +3,9 @@
 //import com.example.demo.dto.PaymentFileByIDResponseDTO;
 //import com.example.demo.entity.*;
 //import com.example.demo.repository.*;
+//import com.paymentProcess.entity.PaymentFile;
+//import com.paymentProcess.entity.Payments;
+//import com.paymentProcess.repository.*;
 //import lombok.extern.slf4j.Slf4j;
 //import org.springframework.stereotype.Service;
 //import org.w3c.dom.Document;

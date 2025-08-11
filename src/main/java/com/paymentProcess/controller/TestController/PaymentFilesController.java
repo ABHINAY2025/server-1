@@ -3,6 +3,7 @@
 //import com.example.demo.dto.PaymentFileByIDResponseDTO;
 //import com.example.demo.entity.*;
 //import com.example.demo.service.servic.PaymentFilesService;
+//import com.paymentProcess.entity.StpConfigurations;
 //import org.springframework.http.ResponseEntity;
 //import org.springframework.web.bind.annotation.*;
 //

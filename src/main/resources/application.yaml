@@ -4,7 +4,7 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb+srv://Sira:pXNYDkq1VvDy3ztf@cluster0.moo8k.mongodb.net/dataknol-fisec?retryWrites=true&w=majority
+      uri: "mongodb+srv://Manoj_Gopi:Fsgit%40321@cluster0.pgnyvuh.mongodb.net/DATACONTROL?retryWrites=true&w=majority&appName=Cluster0"
 
 server:
   port: 5000
