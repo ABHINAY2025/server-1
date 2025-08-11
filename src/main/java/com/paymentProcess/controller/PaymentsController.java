@@ -9,10 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api")
@@ -67,25 +64,32 @@ public class PaymentsController {
     }
 
         // APi for the Transaction page
-    @GetMapping("/transactionPage")
-    public ResponseEntity<Map<String, Object>> getAllTransactions() {
-        List<Payments> paymentFiles = paymentsService.getAllPaymentsFiles();
+        @GetMapping("/transactionPage")
+        public ResponseEntity<Map<String, Object>> getAllTransactions(
+                @RequestParam(required = false) String fileStatus) {
 
-        // Sum up the BigDecimal values of ctrlSum directly
-        Double totalAmount = paymentFiles.stream()
-                .map(Payments::getAmount)
-                .reduce(0.0, Double::sum);
 
-        Long totalTransactions = (long) paymentFiles.size();
+            List<Payments> paymentFiles;
+            if (fileStatus != null && !fileStatus.isEmpty()) {
+                paymentFiles = paymentsService.getPaymentsByStatus(fileStatus);
+            } else {
+                paymentFiles = paymentsService.getAllPaymentsFiles();
+            }
+            Double totalAmount = paymentFiles.stream()
+                    .map(Payments::getAmount)
+                    .filter(Objects::nonNull)
+                    .reduce(0.0, Double::sum);
 
-        // Create a response map with the required fields
-        Map<String, Object> response = new HashMap<>();
-        response.put("paymentFiles", paymentFiles);
-        response.put("totalAmount", totalAmount);
-        response.put("totalTransactions", totalTransactions);
+            Long totalTransactions = (long) paymentFiles.size();
 
-        return ResponseEntity.ok(response);
-    }
+            Map<String, Object> response = new HashMap<>();
+            response.put("paymentFiles", paymentFiles);
+            response.put("totalAmount", totalAmount);
+            response.put("totalTransactions", totalTransactions);
+
+            return ResponseEntity.ok(response);
+        }
+
 
     //Api to get All Networks from the Networks table
     @GetMapping("/getAll/networks")

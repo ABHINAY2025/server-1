@@ -64,6 +64,13 @@ public class PaymentsServiceImpl implements PaymentsService{
         }
     }
 
+    // Get payments by exact status match
+
+    public List<Payments> getPaymentsByStatus(String fileStatus) {
+        return paymentsRepository.findByFileStatus(fileStatus);
+    }
+
+
     // Method to fetch Payment File by ID with Bank and Customer rule
     @Override
     public PaymentFileByIDResponseDTO getTransactionById(String id) {
