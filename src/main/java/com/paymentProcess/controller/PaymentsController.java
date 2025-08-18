@@ -132,8 +132,7 @@ public class PaymentsController {
         }
         return ResponseEntity.ok(bankRules);
     }
-
-    @GetMapping("/getAll/bankRules")
+    @GetMapping("/bankRules/batch")
     public ResponseEntity<?> getAllBankRules() {
         try {
             return ResponseEntity.ok(paymentsService.getAllBankRules());
@@ -141,7 +140,6 @@ public class PaymentsController {
             return ResponseEntity.status(500).body(e.getMessage());
         }
     }
-
     @GetMapping("/stpConfiguration/{id}")
     public ResponseEntity<?> getByStpConfigId(@PathVariable String id) {
         try {
@@ -150,8 +148,7 @@ public class PaymentsController {
             return ResponseEntity.status(500).body(e.getMessage());
         }
     }
-
-    @GetMapping("/getAll/StpConfigurations")
+    @GetMapping("/customerRules/batch")
     public ResponseEntity<?> getAllStpConfigurations() {
         try {
             return ResponseEntity.ok(paymentsService.getAllStpConfigurations());
