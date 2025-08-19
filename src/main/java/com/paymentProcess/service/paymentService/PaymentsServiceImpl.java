@@ -4,6 +4,7 @@ import com.paymentProcess.dto.PaymentFileByIDResponseDTO;
 import com.paymentProcess.entity.*;
 import com.paymentProcess.repository.*;
 import com.paymentProcess.utility.PaymentProcessUtility;
+import org.bson.types.ObjectId;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -225,6 +226,23 @@ public class PaymentsServiceImpl implements PaymentsService{
         } catch (Exception e) {
             throw new RuntimeException("Error occurred while creating STP configuration: " + e.getMessage(), e);
         }
+    }
+
+
+    // ✅ Fetch BankRules (STP Configurations) by multiple IDs
+    public List<StpConfigurations> getBankRulesByIds(List<String> ruleIds) {
+        List<ObjectId> objectIds = ruleIds.stream()
+                .map(ObjectId::new)
+                .toList();
+        return stpConfigurationRepository.findByIdIn(objectIds);
+    }
+
+    // ✅ Fetch Customer BankRules by multiple IDs
+    public List<BankRules> getCustomerRulesByIds(List<String> ruleIds) {
+        List<ObjectId> objectIds = ruleIds.stream()
+                .map(ObjectId::new)
+                .toList();
+        return bankRulesRepository.findByIdIn(objectIds);
     }
 
     // Get Companies by ID

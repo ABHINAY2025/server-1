@@ -14,7 +14,7 @@ import java.util.List;
 public class BankRules {
 
 
-    private String _id;
+    private String id;
     private String bankName;
     private List<Object> when;
     private List<Object> then;

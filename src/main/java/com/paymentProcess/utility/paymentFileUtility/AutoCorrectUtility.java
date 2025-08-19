@@ -86,14 +86,14 @@ public class AutoCorrectUtility {
             if (debtor != null) {
                 List<BankRules> bankRulesDebtor = bankRulesRepository.findByRuleType("Debit Side");
                 for (BankRules bankRule : bankRulesDebtor) {
-                    debtorBankRulesList.add(bankRule.get_id());
+                    debtorBankRulesList.add(bankRule.getId());
                 }
             }
 
             if (creditor != null) {
                 List<BankRules> bankRulesCreditor = bankRulesRepository.findByRuleType("Credit Side");
                 for (BankRules bankRule : bankRulesCreditor) {
-                    creditorBankRulesList.add(bankRule.get_id());
+                    creditorBankRulesList.add(bankRule.getId());
                 }
             }
 
@@ -120,7 +120,7 @@ public class AutoCorrectUtility {
                 List<String> debtorBankRulesList = new ArrayList<>();
                 List<BankRules> bankRulesDebtor = bankRulesRepository.findByRuleType("Debit Side");
                 for (BankRules bankRule : bankRulesDebtor) {
-                    debtorBankRulesList.add(bankRule.get_id());
+                    debtorBankRulesList.add(bankRule.getId());
                 }
                 debtorRuleID.setBank_rules(debtorBankRulesList);
             }
@@ -129,7 +129,7 @@ public class AutoCorrectUtility {
                 List<String> creditorBankRulesList = new ArrayList<>();
                 List<BankRules> bankRulesCreditor = bankRulesRepository.findByRuleType("Credit Side");
                 for (BankRules bankRule : bankRulesCreditor) {
-                    creditorBankRulesList.add(bankRule.get_id());
+                    creditorBankRulesList.add(bankRule.getId());
                 }
                 creditorRuleID.setBank_rules(creditorBankRulesList);
             }

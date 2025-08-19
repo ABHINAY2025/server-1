@@ -132,7 +132,8 @@ public class PaymentsController {
         }
         return ResponseEntity.ok(bankRules);
     }
-    @GetMapping("/bankRules/batch")
+
+    @GetMapping("/getAll/bankRules")
     public ResponseEntity<?> getAllBankRules() {
         try {
             return ResponseEntity.ok(paymentsService.getAllBankRules());
@@ -140,6 +141,7 @@ public class PaymentsController {
             return ResponseEntity.status(500).body(e.getMessage());
         }
     }
+
     @GetMapping("/stpConfiguration/{id}")
     public ResponseEntity<?> getByStpConfigId(@PathVariable String id) {
         try {
@@ -148,7 +150,8 @@ public class PaymentsController {
             return ResponseEntity.status(500).body(e.getMessage());
         }
     }
-    @GetMapping("/customerRules/batch")
+
+    @GetMapping("/getAll/StpConfigurations")
     public ResponseEntity<?> getAllStpConfigurations() {
         try {
             return ResponseEntity.ok(paymentsService.getAllStpConfigurations());
@@ -187,6 +190,18 @@ public class PaymentsController {
         } catch (RuntimeException e) {
             return ResponseEntity.status(500).body(e.getMessage());
         }
+    }
+
+    @PostMapping("/bankRules/batch")
+    public List<StpConfigurations> getBankRules(@RequestBody Map<String, List<String>> request) {
+        List<String> ruleIds = request.get("ruleIds");
+        return paymentsService.getBankRulesByIds(ruleIds);
+    }
+
+    @PostMapping("/customerRules/batch")
+    public List<BankRules> getCustomerRules(@RequestBody Map<String, List<String>> request) {
+        List<String> ruleIds = request.get("ruleIds");
+        return paymentsService.getCustomerRulesByIds(ruleIds);
     }
 
     // Endpoint to create a new bank rule

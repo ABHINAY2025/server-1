@@ -12,7 +12,7 @@ public class StpConfigurations {
 
     @Setter
     @Getter
-    private String _id;
+    private String id;
     private List<Object> when;
     private List<Object> then;
     private Boolean isActive;

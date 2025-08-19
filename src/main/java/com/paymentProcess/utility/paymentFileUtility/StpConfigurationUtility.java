@@ -53,11 +53,11 @@ public class StpConfigurationUtility {
                             applyThenCondition(payment, config.getThen());
 
                             if (appliesToDebtor) {
-                                debtorCustomerRulesList.add(config.get_id());
+                                debtorCustomerRulesList.add(config.getId());
                                 debtorRuleApplied = true;
                             }
                             if (appliesToCreditor) {
-                                creditorCustomerRulesList.add(config.get_id());
+                                creditorCustomerRulesList.add(config.getId());
                                 creditorRuleApplied = true;
                             }
                         }
