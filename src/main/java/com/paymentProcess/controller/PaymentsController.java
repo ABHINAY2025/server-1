@@ -193,13 +193,13 @@ public class PaymentsController {
     }
 
     @PostMapping("/bankRules/batch")
-    public List<StpConfigurations> getBankRules(@RequestBody Map<String, List<String>> request) {
+    public List<BankRules> getBankRules(@RequestBody Map<String, List<String>> request) {
         List<String> ruleIds = request.get("ruleIds");
         return paymentsService.getBankRulesByIds(ruleIds);
     }
 
     @PostMapping("/customerRules/batch")
-    public List<BankRules> getCustomerRules(@RequestBody Map<String, List<String>> request) {
+    public List<StpConfigurations> getCustomerRules(@RequestBody Map<String, List<String>> request) {
         List<String> ruleIds = request.get("ruleIds");
         return paymentsService.getCustomerRulesByIds(ruleIds);
     }

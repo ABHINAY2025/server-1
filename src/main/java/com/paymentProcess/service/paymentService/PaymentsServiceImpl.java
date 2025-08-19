@@ -230,19 +230,20 @@ public class PaymentsServiceImpl implements PaymentsService{
 
 
     // ✅ Fetch BankRules (STP Configurations) by multiple IDs
-    public List<StpConfigurations> getBankRulesByIds(List<String> ruleIds) {
-        List<ObjectId> objectIds = ruleIds.stream()
-                .map(ObjectId::new)
-                .toList();
-        return stpConfigurationRepository.findByIdIn(objectIds);
-    }
-
-    // ✅ Fetch Customer BankRules by multiple IDs
-    public List<BankRules> getCustomerRulesByIds(List<String> ruleIds) {
+    public List<BankRules> getBankRulesByIds(List<String> ruleIds) {
         List<ObjectId> objectIds = ruleIds.stream()
                 .map(ObjectId::new)
                 .toList();
         return bankRulesRepository.findByIdIn(objectIds);
+
+    }
+
+    // ✅ Fetch Customer BankRules by multiple IDs
+    public List<StpConfigurations> getCustomerRulesByIds(List<String> ruleIds) {
+        List<ObjectId> objectIds = ruleIds.stream()
+                .map(ObjectId::new)
+                .toList();
+        return stpConfigurationRepository.findByIdIn(objectIds);
     }
 
     // Get Companies by ID
