@@ -24,7 +24,4 @@ public class StpConfigurations {
     private String ruleDescription;
     private LocalDateTime selectedStartDate;
     private LocalDateTime selectedEndDate;
-
-
-
 }

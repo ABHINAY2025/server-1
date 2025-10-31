@@ -2,6 +2,7 @@ package com.paymentProcess.controller;
 
 import com.paymentProcess.entity.BankRules;
 import com.paymentProcess.entity.Companies;
+import com.paymentProcess.entity.Networks;
 import com.paymentProcess.entity.Payments;
 import com.paymentProcess.entity.StpConfigurations;
 import com.paymentProcess.service.paymentService.PaymentsServiceImpl;
@@ -226,6 +227,18 @@ public class PaymentsController {
         }
     }
 
+    // ✅ Create new Network Rule
+    @PostMapping("/create/networkRules")
+    public ResponseEntity<Networks> createRule(@RequestBody Networks networkRule) {
+        try {
+            Networks createdRule = paymentsService.createRule(networkRule);
+            return new ResponseEntity<>(createdRule, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
     // Endpoint to get company by ID
     @GetMapping("/companies/{id}")
     public ResponseEntity<Companies> getCompanyById(@PathVariable("id") String id) {
@@ -313,6 +326,4 @@ public class PaymentsController {
             return ResponseEntity.status(500).body(e.getMessage());
         }
     }
-
-
 }

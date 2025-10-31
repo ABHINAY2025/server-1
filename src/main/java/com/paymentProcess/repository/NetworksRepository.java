@@ -10,7 +10,8 @@ import java.util.List;
 public interface NetworksRepository extends MongoRepository<Networks, String> {
     Networks findByName(String name);
 
-    List<Networks> findByCompanyName(String companyName);
+//    List<Networks> findByCompanyName(String companyName);
 
     List<Networks> findByType(String type);
+
 }

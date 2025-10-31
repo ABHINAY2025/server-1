@@ -5,6 +5,7 @@ import com.paymentProcess.repository.PaymentsRepository;
 import com.paymentProcess.utility.ApprovedUtility;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 
@@ -18,6 +19,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 
 @Service
 public class ApprovedService {
@@ -45,47 +47,80 @@ public class ApprovedService {
     }
 
     // Method to approve the payment file
-    public boolean approvePaymentFile(String id, String updatedXml) throws Exception {
-        // Fetch the PaymentFile by ID
-        Payments payments = paymentsRepository.findById(id).orElse(null);
-        if (payments != null) {
+//    public boolean approvePaymentFile(String id, String updatedXml) throws Exception {
+//        // Fetch the PaymentFile by ID
+//        Payments payments = paymentsRepository.findById(id).orElse(null);
+//        System.out.print(id);
+//        if (payments != null) {
+//
+//            // Use Jackson to parse the JSON string and extract the XML part
+//            ObjectMapper objectMapper = new ObjectMapper();
+//            JsonNode rootNode = objectMapper.readTree(updatedXml);
+//            String originalXml = rootNode.get("updatedXml").asText();
+//
+//            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+//            factory.setNamespaceAware(true);
+//            DocumentBuilder builder = factory.newDocumentBuilder();
+//
+//            InputStream is = new ByteArrayInputStream(originalXml.getBytes("UTF-8"));
+//            Document document = builder.parse(is);
+//
+//            String formattedOriginalXml = originalXml;
+////            String formattedOriginalXml = formatXml(document);
+////            // Remove BOM (Byte Order Mark) if it exists and trim the string
+////            if (originalXml.startsWith("\uFEFF")) {
+////                originalXml = originalXml.substring(1);
+////            }
+////            originalXml = originalXml.trim();
+//
+//            // Set the updatedXml as a String
+//            payments.setUpdatedXml(formattedOriginalXml);
+//            payments.setFileStatus("Approved");
+//            // Save the updated PaymentFile
+//            paymentsRepository.save(payments);
+//            // Create and save AutoCorrectRules records for debtor and creditor
+//            approvedUtility.createAndSaveAutoCorrectRules(payments);
+//
+//            return true;
+//        } else {
+//            return false;
+//        }
+//    }
 
-            // Use Jackson to parse the JSON string and extract the XML part
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode rootNode = objectMapper.readTree(updatedXml);
-            String originalXml = rootNode.get("updatedXml").asText();
+public boolean approvePaymentFile(String id, String updatedXml) throws Exception {
+    // Fetch the PaymentFile by ID
+    Payments payments = paymentsRepository.findById(new ObjectId(id)).orElse(null);
 
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setNamespaceAware(true);
-            DocumentBuilder builder = factory.newDocumentBuilder();
-
-            InputStream is = new ByteArrayInputStream(originalXml.getBytes("UTF-8"));
-            Document document = builder.parse(is);
-
-            String formattedOriginalXml = originalXml;
-//            String formattedOriginalXml = formatXml(document);
-
-//            // Remove BOM (Byte Order Mark) if it exists and trim the string
-//            if (originalXml.startsWith("\uFEFF")) {
-//                originalXml = originalXml.substring(1);
-//            }
-
-//            originalXml = originalXml.trim();
-
-            // Set the updatedXml as a String
-            payments.setUpdatedXml(formattedOriginalXml);
-            payments.setFileStatus("Approved");
-
-            // Save the updated PaymentFile
-            paymentsRepository.save(payments);
-
-            // Create and save AutoCorrectRules records for debtor and creditor
-            approvedUtility.createAndSaveAutoCorrectRules(payments);
-
-            return true;
-        } else {
-            return false;
-        }
+    if (payments == null) {
+        return false; // Payment file not found
     }
+
+    try {
+        // Parse XML to ensure it is well-formed
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
+        DocumentBuilder builder = factory.newDocumentBuilder();
+
+        try (InputStream is = new ByteArrayInputStream(updatedXml.getBytes(StandardCharsets.UTF_8))) {
+            Document document = builder.parse(is);
+        }
+
+        // Update payment record
+        payments.setUpdatedXml(updatedXml);
+        payments.setFileStatus("Approved");
+
+        // Save updated payment
+        paymentsRepository.save(payments);
+
+        // Create AutoCorrectRules if needed
+        approvedUtility.createAndSaveAutoCorrectRules(payments);
+
+        return true;
+    } catch (Exception e) {
+        e.printStackTrace(); // Log the error
+        return false; // Could not approve due to invalid XML or other error
+    }
+}
+
 
 }

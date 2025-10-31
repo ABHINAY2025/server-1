@@ -49,7 +49,10 @@ public class PaymentsServiceImpl implements PaymentsService{
     @Override
     public Optional<Payments> getPaymentFileBy(String id) {
         try {
-            return paymentsRepository.findById(id);
+            ObjectId objectId = new ObjectId(id); // Convert String to ObjectId
+            return paymentsRepository.findById(objectId);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Invalid ID format: " + id, e);
         } catch (Exception e) {
             throw new RuntimeException("Error occurred while fetching payment files: " + e.getMessage(), e);
         }
@@ -77,7 +80,8 @@ public class PaymentsServiceImpl implements PaymentsService{
     public PaymentFileByIDResponseDTO getTransactionById(String id) {
         PaymentFileByIDResponseDTO paymentFileByIDResponseDTO = new PaymentFileByIDResponseDTO();
         try {
-            Optional<Payments> paymentFile = paymentsRepository.findById(id);
+            Optional<Payments> paymentFile = paymentsRepository.findById(new ObjectId(id));
+
             if (paymentFile.isPresent()) {
                 Payments paymentFile1 = paymentFile.get();
                 paymentFileByIDResponseDTO.setPaymentFile(paymentFile1);
@@ -225,6 +229,15 @@ public class PaymentsServiceImpl implements PaymentsService{
             return stpConfigurationRepository.save(stpConfigurations);
         } catch (Exception e) {
             throw new RuntimeException("Error occurred while creating STP configuration: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public Networks createRule(Networks networkRule) {
+        try {
+            return networksRepository.save(networkRule); // instance call ✅
+        } catch (Exception e) {
+            throw new RuntimeException("Error occurred while creating Network Rule: " + e.getMessage(), e);
         }
     }
 

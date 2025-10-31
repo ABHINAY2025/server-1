@@ -1,14 +1,17 @@
 package com.paymentProcess.repository;
 
 import com.paymentProcess.entity.Payments;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
-public interface PaymentsRepository extends MongoRepository<Payments, String> {
+public interface PaymentsRepository extends MongoRepository<Payments, ObjectId> {
     List<Payments> findByFileStatus(String fileStatus);
+
 }
 
 

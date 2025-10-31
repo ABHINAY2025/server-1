@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OnHoldViewRepo extends MongoRepository<OnHoldView, Integer> {
+
 }

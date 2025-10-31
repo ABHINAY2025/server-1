@@ -52,4 +52,7 @@ public interface PaymentsService {
     List<AutoCorrectRules> getAllAutoCorrectRules();
 
     AutoCorrectRules getAutoCorrectRuleById(String id);
+
+    Networks createRule(Networks networks);
+
 }

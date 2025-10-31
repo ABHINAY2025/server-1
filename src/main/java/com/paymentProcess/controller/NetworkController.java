@@ -31,7 +31,7 @@ public class NetworkController {
     public ResponseEntity<?> updateApprovedStatus(@RequestBody SwitchNetworkRequest switchNetworkRequest) {
         try {
             Networks updatedNetwork = networkService.updateApprovedStatus(
-                    switchNetworkRequest.getSecondaryNetwork().get_id(),
+                    switchNetworkRequest.getSecondaryNetwork().getId(),
                     switchNetworkRequest.getIsApproved()
             );
 
